@@ -1,0 +1,4 @@
+importFrom(preprocessCore, normalize.quantiles)
+importFrom(stats, aggregate, cor, density, dgamma, dnorm, integrate, median, optim, optimize, pgamma, pnorm, rnorm, runif, sd, var)
+importFrom(utils, head, read.csv, read.table, write.csv)
+export (mbcb.parseFile, mbcb.correct, mbcb.main, bg.rma, bg.mcmc, mbcb.gui)

@@ -1,0 +1,143 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amscd}
+\usepackage[tableposition=top]{caption}
+\usepackage{ifthen}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage{url}
+
+\addtolength{\topmargin}{-.25in}
+\addtolength{\textheight}{1.25in}
+
+\begin{document}
+
+\title{MBCB Usage}
+\author{Jeffrey D. Allen}
+\maketitle
+
+%\VignettePackage{MBCB}
+%\VignetteIndexEntry{MBCB}
+
+This file will demonstrate the usage of the MBCB package. The goal of this package is to use model-based techniques to background-correct Illumina datasets. This method makes use of the negative control probes offered on more recent Illumina microarrays.
+
+\section{Sample Data}
+
+Sample data is included in the MBCB package. You can access this data with the following command:
+<<load package and data>>=
+library(MBCB);
+data(MBCBExpressionData);
+@
+which creates two new variables: \textit{expressionSignal} and \textit{negativeControl}. These two sets of data are the foundation for all of the analysis we'll do with MBCB.
+
+Because most users will have such data stored in files, we offer a function to read the data in from files on disk and format them properly. However, in order to demonstrate these, we'll first need to write the data to files. We'll write them as tab-delimited files by using the following commands:
+<<write sample data to files>>=
+write.table(expressionSignal, 'signal.txt', sep="\t");
+write.table(negativeControl, 'negative.control.txt', sep="\t");
+@
+
+If we wanted to read in two such files into an MBCB-friendly format, we could use the following command:
+<<read sample files in>>=
+data <- mbcb.parseFile('signal.txt', 'negative.control.txt');
+signal <- data$sig;
+negCon <- data$con;
+@
+which creates two separate matrices, one of which represents our signal data, the other of which represents our negative control data.
+
+\section{Analysis}
+
+Next, we can begin to do some analysis on the data. MBCB offers five background correction methods:
+\begin{itemize}
+\item{Non-Parametric}
+\item{MLE}
+\item{GMLE}
+\item{Bayesian/MCMC}
+\item{RMA}
+\end{itemize}
+RMA is a method commonly used on Affymetrix data which may not have negative control beads. Note that this is the only method which does not require a negative control files, but can be run solely on the signal data.
+
+The \textit{mbcb.correct} method is the heart of most of the data analysis. It can be used by first setting the Boolean values representing which methods we are interested in (or just using the defaults):
+<<set BGcorrection method variables>>=
+nonparametric <- TRUE;
+RMA<- TRUE;
+MLE <- TRUE;
+GMLE <- FALSE;
+MCMC <- FALSE;
+@
+and then running the correction using the assigned methods.
+<<BG correct sample data>>=
+ cor <- mbcb.correct(expressionSignal, negativeControl, nonparametric, RMA, MLE, MCMC, GMLE);
+@
+
+\section{mbcb.main}
+
+A simpler way to generate output files using similar techniques is to use the \textit{mbcb.main} method. With it, we call it in the same way as above but also specify the format for the output files. Unlike the \textit{mbcb.correct} function which returns the data as objects within R, in this method, the data is written out to files specified as follows:
+<<mbcb.main with values set>>=
+mbcb.main(expressionSignal, negativeControl, nonparametric, RMA, MLE, MCMC, GMLE, "param-est", "bgCorrected");
+@
+or, more simply,
+<<default mbcb.main run>>=
+mbcb.main(expressionSignal, negativeControl, paramEstFile="param-est", bgCorrectedFile="bgCorrected");
+@
+which will prefix all output files with the above strings.
+
+Boxplots demonstrating the ouput of each background correction method can also be generated:
+
+<<plotcorrections, fig=TRUE>>=
+ylimits <- c(10,60000);
+
+par(mfrow=c(2,2), mar=c(4,4,3,1))
+boxplot(expressionSignal, log="y", ylim=ylimits, main="Raw Expression")
+boxplot(cor$NP, log="y", ylim=ylimits, main="NP-corrected")
+boxplot(cor$RMA, log="y", ylim=ylimits, main="RMA-corrected")
+boxplot(cor$MLE, log="y", ylim=ylimits, main="MLE-corrected")
+@
+
+\section{Normalization}
+
+We can also make use of normalization after we background correct the data using \textit{mbcb.main}. Our options for normalization are:
+\begin{itemize}
+\item{"none" - no normalization will be applied}
+\item{"quant" - Quantile-Quantile normalization (requires the affy/affyio packages)}
+\item{"median" - Median or "global" normalization}
+\end{itemize}
+
+We can use these as follows:
+<<MBCBnormalization>>=
+mbcb.main(expressionSignal, negativeControl, normMethod="quant");
+quant_np <- read.csv("bgCorrected-NP.csv", row.names=1)
+mbcb.main(expressionSignal, negativeControl, normMethod="median");
+median_np <- read.csv("bgCorrected-NP.csv", row.names=1)
+@
+
+Boxplots showing the impact of normalization can be created as follows. Note that the Y-axes vary between each plot.
+
+<<normPlots, fig=TRUE>>=
+par(mfrow=c(2,2), mar=c(4,4,3,1))
+boxplot(expressionSignal, log="y", main="Raw Expression")
+boxplot(cor$NP, log="y", main="Non-normalized NP")
+boxplot(median_np, log="y", main="Quantile Norm, NP-corrected")
+boxplot(quant_np, log="y", main="Median Norm, NP-corrected")
+@
+
+\section{GUI}
+
+A Graphical User Interface (GUI) is provided which simplifies the workflow for using all of these methods.The following function opens the GUI:
+<<open GUI>>=
+mbcb.gui();
+@
+
+The GUI will walk you through the process and configuration of the package in a more user-friendly format. You'll begin by importing your files, then will select which method you want to use to perform the background correction, and (optionally) select a normalization method. You will then be asked where to save the output files.
+
+Enjoy!
+
+\section{Session Information}
+
+The resulting sesion information is as follows:
+
+<<sessionInfo, echo=FALSE>>=
+sessionInfo();
+@
+
+\end{document}
