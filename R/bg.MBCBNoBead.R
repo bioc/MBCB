@@ -3,7 +3,7 @@
 
 # MBCB package
 # Algorithm design by Yang Xie et. al.
-# Package implementation and maintenence by Jeff Allen
+# Package implementation and maintenence by Jeff Allen, (Bo Yao, the following maintainer)
 # 2008 - University of Texas Southwestern Medical Center
 
 
