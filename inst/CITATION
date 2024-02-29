@@ -1,0 +1,13 @@
+citHeader("Please cite the following if utilizing the MBCB software: ")
+citEntry(entry="article",
+  author = "Yang Xie, Xinlei Wang, and Michael Story",
+  title = "Statistical methods of background correction for Illumina BeadArray data",
+  journal = "Bioinformatics",
+  year = 2009,
+  volume = 25,
+  pages = "751--757",
+  textVersion=
+    paste("Yang Xie, Xinlei Wang, Michael Story",
+          "Statistical methods of background correction for Illumina BeadArray data.", 
+          "Bioinformatics. 2009;25:751–757.",sep="\n")
+)
