@@ -5,7 +5,7 @@ citEntry(entry="article",
   journal = "Bioinformatics",
   year = 2009,
   volume = 25,
-  pages = "751--757",
+  pages = "751-757",
   textVersion=
     paste("Yang Xie, Xinlei Wang, Michael Story",
           "Statistical methods of background correction for Illumina BeadArray data.",

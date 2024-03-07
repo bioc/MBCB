@@ -9,4 +9,4 @@ Imports: preprocessCore, stats, utils
 Description: This package provides a model-based background correction method, which incorporates the negative control beads to pre-process Illumina BeadArray data.
 License: GPL (>= 2)
 biocViews: Microarray, Preprocessing
-URL: http://qbrc.swmed.edu
+URL: http://qbrc.swmed.edu/
