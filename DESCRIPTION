@@ -2,12 +2,11 @@ Package: MBCB
 Version: 1.57.0
 Date: 2010-05-10
 Title: MBCB (Model-based Background Correction for Beadarray)
+Description: This package provides a model-based background correction method, which incorporates the negative control beads to pre-process Illumina BeadArray data.
 Author: Yang Xie <Yang.Xie@UTSouthwestern.edu>
 Maintainer: Bo Yao <Bo.Yao@UTSouthwestern.edu>
+License: GPL (>=2)
 Depends: R (>= 2.9.0), tcltk, tcltk2
 Imports: preprocessCore, stats, utils
-Description: This package provides a model-based background correction method, which incorporates the negative control beads to pre-process Illumina BeadArray data.
-License: GPL (>= 2)
+URL: https://qbrc.swmed.edu/
 biocViews: Microarray, Preprocessing
-URL: https://qbrc.swmed.edu
-
